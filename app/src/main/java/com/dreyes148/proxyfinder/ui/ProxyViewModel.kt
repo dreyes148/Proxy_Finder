@@ -30,7 +30,7 @@ class ProxyViewModel : ViewModel() {
      * Fetch proxies from all sources with filters
      */
     fun fetchProxies(
-        country: String? = null,
+        countries: List<String> = emptyList(),
         protocols: List<String> = emptyList(),
         anonymity: List<String> = emptyList()
     ) {
@@ -38,7 +38,7 @@ class ProxyViewModel : ViewModel() {
             _proxies.value = Resource.Loading()
             
             val result = withContext(Dispatchers.IO) {
-                repository.fetchProxies(country, protocols, anonymity)
+                repository.fetchProxies(countries, protocols, anonymity)
             }
             
             _proxies.value = result

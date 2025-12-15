@@ -43,7 +43,10 @@ class CheckerFragment : Fragment() {
     }
     
     private fun setupRecyclerView() {
-        adapter = CheckerResultAdapter()
+        adapter = CheckerResultAdapter { proxy ->
+            // Copy single proxy to clipboard
+            copySingleProxy(proxy)
+        }
         binding.resultsRecyclerView.adapter = adapter
     }
     
@@ -56,13 +59,27 @@ class CheckerFragment : Fragment() {
             stopCheck()
         }
         
-        binding.btnCopyValid.setOnClickListener {
-            copyValidProxies()
+        binding.btnCopyAll.setOnClickListener {
+            copyAllVisibleProxies()
+        }
+        
+        // Filter chip listeners
+        binding.chipFilterAll.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) viewModel.setFilter("all")
+        }
+        
+        binding.chipFilterValid.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) viewModel.setFilter("valid")
+        }
+        
+        binding.chipFilterInvalid.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) viewModel.setFilter("invalid")
         }
     }
     
     private fun observeViewModel() {
-        viewModel.checkedProxies.observe(viewLifecycleOwner) { proxies ->
+        // Observe filtered proxies instead of all checked proxies
+        viewModel.filteredProxies.observe(viewLifecycleOwner) { proxies ->
             adapter.submitList(proxies.toList()) // Create new list to trigger update
         }
         
@@ -128,6 +145,33 @@ class CheckerFragment : Fragment() {
         Toast.makeText(
             context,
             getString(R.string.valid_proxies_copied, validProxies.size),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    
+    private fun copyAllVisibleProxies() {
+        val visibleProxies = viewModel.getVisibleProxies()
+        
+        if (visibleProxies.isEmpty()) {
+            Toast.makeText(context, getString(R.string.no_valid_proxies), Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val proxyText = visibleProxies.joinToString("\n") { it.toConnectionString() }
+        copyToClipboard(proxyText)
+        
+        Toast.makeText(
+            context,
+            getString(R.string.all_proxies_copied, visibleProxies.size),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    
+    private fun copySingleProxy(proxy: Proxy) {
+        copyToClipboard(proxy.toConnectionString())
+        Toast.makeText(
+            context,
+            getString(R.string.proxy_copied_single),
             Toast.LENGTH_SHORT
         ).show()
     }
