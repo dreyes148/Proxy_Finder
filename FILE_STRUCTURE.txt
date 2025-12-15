@@ -1,0 +1,116 @@
+PROXY FINDER - COMPLETE FILE STRUCTURE
+=======================================
+
+Root Directory:
+├── .git/                           # Git repository
+├── .gitignore                      # Git ignore rules
+├── README.md                       # Project overview
+├── DOCUMENTATION.md                # Technical documentation
+├── PROJECT_SUMMARY.md              # Feature checklist
+├── QUICK_START.md                  # Setup guide
+├── FILE_STRUCTURE.txt              # This file
+│
+├── build.gradle                    # Project-level Gradle config
+├── settings.gradle                 # Module settings
+├── gradle.properties               # Gradle properties
+├── gradlew                         # Gradle wrapper script (Unix)
+├── local.properties                # Local SDK path (not committed)
+│
+├── gradle/
+│   └── wrapper/
+│       ├── gradle-wrapper.jar      # Gradle wrapper JAR
+│       └── gradle-wrapper.properties # Wrapper configuration
+│
+└── app/                            # Main application module
+    ├── build.gradle                # App-level Gradle with dependencies
+    ├── proguard-rules.pro          # ProGuard configuration
+    │
+    └── src/
+        └── main/
+            ├── AndroidManifest.xml # App manifest with permissions
+            │
+            ├── java/com/dreyes148/proxyfinder/
+            │   │
+            │   ├── model/          # Data Models (3 files)
+            │   │   ├── Proxy.kt                    # Main proxy data class
+            │   │   ├── ApiModels.kt                # API response models
+            │   │   └── Resource.kt                 # Network state wrapper
+            │   │
+            │   ├── data/           # Data Layer (2 files)
+            │   │   ├── ProxyApiService.kt          # Retrofit API interfaces
+            │   │   └── ProxyRepository.kt          # Repository implementation
+            │   │
+            │   ├── ui/             # UI Layer (8 files)
+            │   │   ├── MainActivity.kt             # Main activity with navigation
+            │   │   ├── SearchFragment.kt           # Search UI
+            │   │   ├── ListFragment.kt             # List UI
+            │   │   ├── CheckerFragment.kt          # Checker UI
+            │   │   ├── ProxyViewModel.kt           # Shared ViewModel
+            │   │   ├── CheckerViewModel.kt         # Checker ViewModel
+            │   │   ├── ProxyAdapter.kt             # RecyclerView adapter
+            │   │   └── CheckerResultAdapter.kt     # Checker results adapter
+            │   │
+            │   └── utils/          # Utilities (1 file)
+            │       └── ProxyChecker.kt             # Proxy validation utility
+            │
+            └── res/                # Resources
+                │
+                ├── drawable/
+                │   └── ic_launcher_foreground.xml  # Launcher icon foreground
+                │
+                ├── layout/         # Layouts (6 files)
+                │   ├── activity_main.xml           # Main activity layout
+                │   ├── fragment_search.xml         # Search fragment layout
+                │   ├── fragment_list.xml           # List fragment layout
+                │   ├── fragment_checker.xml        # Checker fragment layout
+                │   ├── item_proxy.xml              # Proxy list item
+                │   └── item_checker_result.xml     # Checker result item
+                │
+                ├── menu/
+                │   └── bottom_nav_menu.xml         # Bottom navigation menu
+                │
+                ├── mipmap-anydpi-v26/
+                │   ├── ic_launcher.xml             # Adaptive launcher icon
+                │   └── ic_launcher_round.xml       # Adaptive round icon
+                │
+                ├── mipmap-mdpi/
+                │   ├── ic_launcher.png             # Icon (mdpi)
+                │   └── ic_launcher_round.png
+                │
+                ├── mipmap-hdpi/
+                │   ├── ic_launcher.png             # Icon (hdpi)
+                │   └── ic_launcher_round.png
+                │
+                ├── mipmap-xhdpi/
+                │   ├── ic_launcher.png             # Icon (xhdpi)
+                │   └── ic_launcher_round.png
+                │
+                ├── mipmap-xxhdpi/
+                │   ├── ic_launcher.png             # Icon (xxhdpi)
+                │   └── ic_launcher_round.png
+                │
+                ├── mipmap-xxxhdpi/
+                │   ├── ic_launcher.png             # Icon (xxxhdpi)
+                │   └── ic_launcher_round.png
+                │
+                └── values/
+                    ├── strings.xml                 # String resources
+                    ├── colors.xml                  # Color definitions
+                    └── themes.xml                  # App theme
+
+TOTAL FILES:
+- Kotlin source files: 14
+- XML layout files: 6
+- XML resource files: 7
+- Gradle files: 5
+- Documentation files: 5
+- Configuration files: 3
+- Icon files: 12
+
+TOTAL: 52+ files (excluding .git directory)
+
+Package Name: com.dreyes148.proxyfinder
+Min SDK: 24 (Android 7.0)
+Target SDK: 34 (Android 14)
+Language: Kotlin
+Architecture: MVVM
