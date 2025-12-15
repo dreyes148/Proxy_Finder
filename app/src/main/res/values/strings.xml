@@ -50,7 +50,22 @@
     <string name="status_invalid">Invalid</string>
     <string name="status_checking">Checking…</string>
     
+    <!-- Country Picker -->
+    <string name="select_countries">Seleccionar Países</string>
+    <string name="search_country">Buscar país…</string>
+    <string name="countries_selected">%d países seleccionados</string>
+    <string name="all_countries_selected">Todos los países</string>
+    
+    <!-- Checker Filter -->
+    <string name="filter_all">Todos</string>
+    <string name="filter_valid">Válidos</string>
+    <string name="filter_invalid">Inválidos</string>
+    <string name="btn_copy_all">Copiar Todos</string>
+    <string name="btn_copy">Copiar</string>
+    <string name="proxy_copied_single">Proxy copiado</string>
+    <string name="all_proxies_copied">Copiados %d proxies</string>
+    
     <!-- Common -->
     <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Cancelar</string>
 </resources>

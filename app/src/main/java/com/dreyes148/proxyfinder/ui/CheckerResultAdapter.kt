@@ -13,7 +13,9 @@ import com.dreyes148.proxyfinder.model.Proxy
 /**
  * RecyclerView adapter for displaying proxy check results
  */
-class CheckerResultAdapter : ListAdapter<Proxy, CheckerResultAdapter.ResultViewHolder>(ProxyDiffCallback()) {
+class CheckerResultAdapter(
+    private val onCopyClick: (Proxy) -> Unit
+) : ListAdapter<Proxy, CheckerResultAdapter.ResultViewHolder>(ProxyDiffCallback()) {
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         val binding = ItemCheckerResultBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -21,14 +23,19 @@ class CheckerResultAdapter : ListAdapter<Proxy, CheckerResultAdapter.ResultViewH
     }
     
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onCopyClick)
     }
     
     class ResultViewHolder(private val binding: ItemCheckerResultBinding) : 
         RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(proxy: Proxy) {
+        fun bind(proxy: Proxy, onCopyClick: (Proxy) -> Unit) {
             binding.proxyText.text = proxy.toConnectionString()
+            
+            // Set up copy button
+            binding.btnCopy.setOnClickListener {
+                onCopyClick(proxy)
+            }
             
             when {
                 proxy.isValid == null -> {

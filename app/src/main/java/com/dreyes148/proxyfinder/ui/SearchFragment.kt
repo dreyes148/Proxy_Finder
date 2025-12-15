@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.dreyes148.proxyfinder.R
 import com.dreyes148.proxyfinder.databinding.FragmentSearchBinding
+import com.dreyes148.proxyfinder.model.Country
 import com.dreyes148.proxyfinder.model.Resource
 
 /**
@@ -20,6 +21,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
     
     private val viewModel: ProxyViewModel by activityViewModels()
+    private val selectedCountries = mutableSetOf<Country>()
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,13 +40,43 @@ class SearchFragment : Fragment() {
     }
     
     private fun setupUI() {
-        // Set default country
-        binding.countryInput.setText(getString(R.string.all_countries))
+        // Set default country text
+        updateCountryText()
+        
+        // Country picker click
+        binding.countryInput.setOnClickListener {
+            showCountryPicker()
+        }
+        
+        // Prevent keyboard from appearing
+        binding.countryInput.isFocusable = false
+        binding.countryInput.isClickable = true
         
         // Get Proxies button click
         binding.btnGetProxies.setOnClickListener {
             fetchProxies()
         }
+    }
+    
+    private fun showCountryPicker() {
+        val dialog = CountryPickerDialog(
+            requireContext(),
+            selectedCountries
+        ) { countries ->
+            selectedCountries.clear()
+            selectedCountries.addAll(countries)
+            updateCountryText()
+        }
+        dialog.show()
+    }
+    
+    private fun updateCountryText() {
+        val text = when {
+            selectedCountries.isEmpty() -> getString(R.string.all_countries)
+            selectedCountries.size == 1 -> selectedCountries.first().getDisplayName()
+            else -> getString(R.string.countries_selected, selectedCountries.size)
+        }
+        binding.countryInput.setText(text)
     }
     
     private fun observeViewModel() {
@@ -78,9 +110,11 @@ class SearchFragment : Fragment() {
     }
     
     private fun fetchProxies() {
-        // Get selected country
-        val country = binding.countryInput.text.toString().takeIf { 
-            it.isNotBlank() && it != getString(R.string.all_countries) 
+        // Get selected countries (use country names for filtering)
+        val countries = if (selectedCountries.isEmpty()) {
+            emptyList()
+        } else {
+            selectedCountries.map { it.nameEs }
         }
         
         // Get selected protocols
@@ -96,7 +130,7 @@ class SearchFragment : Fragment() {
         if (binding.chipElite.isChecked) anonymity.add("Elite")
         
         // Fetch proxies with filters
-        viewModel.fetchProxies(country, protocols, anonymity)
+        viewModel.fetchProxies(countries, protocols, anonymity)
     }
     
     private fun showLoading(isLoading: Boolean) {

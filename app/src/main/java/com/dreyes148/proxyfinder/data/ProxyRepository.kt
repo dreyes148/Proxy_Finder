@@ -50,11 +50,27 @@ class ProxyRepository {
         .build()
         .create(RawProxyApiService::class.java)
     
+    // ProxyList.to API
+    private val proxyListToApi: ProxyListToApiService = Retrofit.Builder()
+        .baseUrl("https://api.proxylist.to/")
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ProxyListToApiService::class.java)
+    
+    // FreeProxyList API (another GitHub source)
+    private val freeProxyListApi: RawProxyApiService = Retrofit.Builder()
+        .baseUrl("https://raw.githubusercontent.com/clarketm/proxy-list/master/")
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(RawProxyApiService::class.java)
+    
     /**
      * Fetch proxies from all sources and apply filters
      */
     suspend fun fetchProxies(
-        country: String? = null,
+        countries: List<String> = emptyList(),
         protocols: List<String> = emptyList(),
         anonymity: List<String> = emptyList()
     ): Resource<List<Proxy>> = withContext(Dispatchers.IO) {
@@ -64,22 +80,26 @@ class ProxyRepository {
             // Fetch from all sources in parallel
             val geonodeDeferred = async { fetchFromGeonode() }
             val proxyScanDeferred = async { fetchFromProxyScan() }
+            val proxyListToDeferred = async { fetchFromProxyListTo() }
             val rawHttpDeferred = async { fetchRawProxies("HTTP") }
             val rawSocks4Deferred = async { fetchRawProxies("SOCKS4") }
             val rawSocks5Deferred = async { fetchRawProxies("SOCKS5") }
+            val freeProxyListDeferred = async { fetchFromFreeProxyList() }
             
             // Collect results
             allProxies.addAll(geonodeDeferred.await())
             allProxies.addAll(proxyScanDeferred.await())
+            allProxies.addAll(proxyListToDeferred.await())
             allProxies.addAll(rawHttpDeferred.await())
             allProxies.addAll(rawSocks4Deferred.await())
             allProxies.addAll(rawSocks5Deferred.await())
+            allProxies.addAll(freeProxyListDeferred.await())
             
             // Remove duplicates based on IP:Port
             val uniqueProxies = allProxies.distinctBy { it.toConnectionString() }
             
             // Apply filters
-            val filteredProxies = applyFilters(uniqueProxies, country, protocols, anonymity)
+            val filteredProxies = applyFilters(uniqueProxies, countries, protocols, anonymity)
             
             Resource.Success(filteredProxies)
         } catch (e: Exception) {
@@ -189,16 +209,18 @@ class ProxyRepository {
      */
     private fun applyFilters(
         proxies: List<Proxy>,
-        country: String?,
+        countries: List<String>,
         protocols: List<String>,
         anonymity: List<String>
     ): List<Proxy> {
         var filtered = proxies
         
-        // Filter by country (case-insensitive)
-        if (!country.isNullOrBlank() && country != "All Countries") {
-            filtered = filtered.filter { 
-                it.country.equals(country, ignoreCase = true) 
+        // Filter by countries (case-insensitive, match any selected country)
+        if (countries.isNotEmpty()) {
+            filtered = filtered.filter { proxy ->
+                countries.any { country ->
+                    proxy.country.equals(country, ignoreCase = true)
+                }
             }
         }
         
@@ -217,6 +239,50 @@ class ProxyRepository {
         }
         
         return filtered
+    }
+    
+    /**
+     * Fetch proxies from ProxyList.to API
+     */
+    private suspend fun fetchFromProxyListTo(): List<Proxy> {
+        return try {
+            val response = proxyListToApi.getProxies()
+            if (response.isSuccessful) {
+                response.body()?.mapNotNull { proxy ->
+                    val parts = proxy.split(":")
+                    if (parts.size == 2) {
+                        Proxy(
+                            ip = parts[0],
+                            port = parts[1],
+                            protocol = "HTTP",
+                            country = "Unknown",
+                            anonymity = "Unknown"
+                        )
+                    } else null
+                } ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+    
+    /**
+     * Fetch proxies from FreeProxyList (clarketm) GitHub
+     */
+    private suspend fun fetchFromFreeProxyList(): List<Proxy> {
+        return try {
+            val response = freeProxyListApi.getProxyList()
+            if (response.isSuccessful) {
+                val text = response.body()?.string() ?: ""
+                parseRawProxyList(text, "HTTP")
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
     
     companion object {

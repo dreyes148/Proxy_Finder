@@ -64,4 +64,22 @@ interface RawProxyApiService {
      */
     @GET("socks5.txt")
     suspend fun getSocks5Proxies(): Response<ResponseBody>
+    
+    /**
+     * Fetch proxy list from clarketm repo
+     */
+    @GET("proxy-list-raw.txt")
+    suspend fun getProxyList(): Response<ResponseBody>
+}
+
+/**
+ * API service for ProxyList.to
+ */
+interface ProxyListToApiService {
+    
+    /**
+     * Fetch proxies from ProxyList.to
+     */
+    @GET("proxy-list")
+    suspend fun getProxies(): Response<List<String>>
 }
