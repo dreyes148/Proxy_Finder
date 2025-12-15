@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Proxy Finder</string>
+    
+    <!-- Navigation -->
+    <string name="nav_search">Search</string>
+    <string name="nav_list">List</string>
+    <string name="nav_checker">Checker</string>
+    
+    <!-- Search Fragment -->
+    <string name="search_title">Search Proxies</string>
+    <string name="select_country">Select Country</string>
+    <string name="all_countries">All Countries</string>
+    <string name="protocol_label">Protocol</string>
+    <string name="protocol_http">HTTP</string>
+    <string name="protocol_socks4">SOCKS4</string>
+    <string name="protocol_socks5">SOCKS5</string>
+    <string name="anonymity_label">Anonymity</string>
+    <string name="anonymity_transparent">Transparent</string>
+    <string name="anonymity_anonymous">Anonymous</string>
+    <string name="anonymity_elite">Elite</string>
+    <string name="btn_get_proxies">Get Proxies</string>
+    <string name="loading">Loading proxies…</string>
+    <string name="error_loading">Error loading proxies: %s</string>
+    
+    <!-- List Fragment -->
+    <string name="list_title">Proxy List</string>
+    <string name="no_proxies">No proxies found. Use Search to fetch proxies.</string>
+    <string name="proxy_count">%d proxies</string>
+    <string name="btn_copy_selected">Copy Selected (%d)</string>
+    <string name="btn_copy_all">Copy All</string>
+    <string name="copied_to_clipboard">Copied %d proxies to clipboard</string>
+    <string name="select_proxies_first">Please select proxies first</string>
+    <string name="copy_proxy">Copy</string>
+    <string name="proxy_copied">Proxy copied</string>
+    
+    <!-- Checker Fragment -->
+    <string name="checker_title">Proxy Checker</string>
+    <string name="hint_paste_proxies">Paste proxies here (ip:port format, one per line)</string>
+    <string name="btn_start_check">Start Check</string>
+    <string name="btn_stop_check">Stop Check</string>
+    <string name="btn_copy_valid">Copy Valid</string>
+    <string name="btn_clear">Clear</string>
+    <string name="checking_status">Checking: %d/%d</string>
+    <string name="check_complete">Complete: %d valid, %d invalid</string>
+    <string name="no_valid_proxies">No valid proxies to copy</string>
+    <string name="valid_proxies_copied">Copied %d valid proxies</string>
+    <string name="paste_proxies_first">Please paste proxies first</string>
+    <string name="status_valid">Valid (%d ms)</string>
+    <string name="status_invalid">Invalid</string>
+    <string name="status_checking">Checking…</string>
+    
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+</resources>
