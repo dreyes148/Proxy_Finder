@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dreyes148.proxyfinder.R
 import com.dreyes148.proxyfinder.databinding.FragmentCheckerBinding
+import com.dreyes148.proxyfinder.model.Proxy
 import com.dreyes148.proxyfinder.utils.ProxyChecker
 
 /**
